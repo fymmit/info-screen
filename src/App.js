@@ -1,24 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import Photo from './components/Photo';
 
 function App() {
+  const baseUrl = 'https://photos.timblo.us';
+  const [images, setImages] = useState([]);
+  const [currentImage, setCurrentImage] = useState(null);
+
+  useEffect(() => {
+    if (images.length === 0) {
+      fetch(`${baseUrl}/images`)
+      .then((res) => res.json())
+      .then((data) => setImages(data.map(image => image.name)));
+    }
+  }, [images]);
+  
+  useEffect(() => {
+    if (images.length > 0) {
+      const randomImage = images[Math.floor(Math.random() * images.length)];
+      if (!currentImage) {
+        setCurrentImage(randomImage)
+      }
+      setInterval(() => {
+        setCurrentImage(randomImage);
+      }, 15000);
+    }
+  }, [images, currentImage]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {currentImage && (
+        <Photo url={`${baseUrl}/${currentImage}`} />
+      )}
     </div>
   );
 }

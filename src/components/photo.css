@@ -1,0 +1,8 @@
+.photo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.photo {
+    height: 100vh;
+}
